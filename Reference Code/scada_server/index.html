@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beaglebone SCADA Demo</title>
+    <link href="static/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="static/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="static/jquery.flot.js"></script>
+    <script type="text/javascript" src="static/socket.io.js"></script>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="static/excanvas.js"></script><![endif]-->
+    <script>
+$(function() {
+
+WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
+WEB_SOCKET_DEBUG = true;
+
+// Socket.io specific code
+var socket = io.connect('/value', {
+  'reconnect': true,
+  'reconnection delay': 500,
+});
+
+// Setup plot
+var options = {
+    series: { shadowSize: 0, color: 'blue'}, // drawing is faster without shadows
+    yaxis: { min: 0, max: 100 },
+    xaxis: { show: false }
+};
+
+// For formatting the plot data
+var enumerate = function(l) {
+    var res = [];
+    for (var i=0; i<l.length; ++i)
+        res.push([i, l[i]])
+    return res;
+};
+
+// Initial plot data is a bunch of 0's
+var d1 = [];
+for (var i=0; i<300; i++)
+    d1.push(0);
+
+// Create the inital graph
+var plot = $.plot($('#graph'), [{data: enumerate(d1)}], options);
+var connected = false;
+
+// Update the graph and text field when we get new data from // the server
+socket.on('speed', function(data) {
+    // Add received data point to the graph
+    d1 = d1.slice(1);
+    d1.push(data);
+    plot.setData([{data: enumerate(d1)}]);
+    plot.draw();
+
+    // Update text field with new pressure value
+    $('#pressure').text(data);
+    
+    // Change connection status from "Connecting..." to "Connected" when first data value comes through
+    if (!connected) {
+      $('#status').text("Connected");
+      connected = true;
+    }
+});
+socket.on('switch', function(data) {
+    // Add received data point to the graph
+    if (data > 0){
+      $('#switch').text("On");
+    } else {
+      $('#switch').text("Off");
+    }
+});
+
+socket.on('disconnect', function(data) {
+  $('#status').text("Connecting...");
+  connected = false;
+});
+
+// When the user presses the Enter key on the text box,
+// send the value in the textbox to the server
+$('#pressure_set').bind("enterKey",function(e){
+   // Get value from textbox
+   var value = $('#pressure_set').val();
+   if (value < 0){
+     value = 0;
+   }
+   if (value > 100){
+     value = 100;
+   }
+   // Send value on Socket IO channel
+   socket.emit('set', value);
+   // Update page to display the sent value
+   $('#set_status').text("New value sent: " + value);
+   // Clear the text nbox
+   $('#pressure_set').val(null);
+});
+
+$('#pressure_set').keyup(function(e){
+    if(e.keyCode == 13)
+    {
+        $(this).trigger("enterKey");
+    }
+});
+
+});
+  </script>
+  </head>
+<body>
+  <h1>Beaglebone SCADA Demo</h1>
+  <br/>
+  <h3>SCADA Server: <span id="status">Connecting...</span></h3>
+  <br/>
+  <h3>Pump Switch: <span id="switch"></span></h3>
+  <h3>Current Pump Speed: <span id="pressure"></span>%</h3>
+  <div id="graph" style="width: 600px; height: 300px;"></div>
+  <div id="description">This graph shows the live pump speed value from the controller</div>
+  <br/>
+  <h3>Set Maximum Pump Speed (0-100%): <input id="pressure_set" placeholder="Enter a value"></input></h3>
+  <span id="set_status"></span>
+  <br/><br/>
+  <div>Type a new value and press enter to send to controller</div>
+</body>
+</html>
