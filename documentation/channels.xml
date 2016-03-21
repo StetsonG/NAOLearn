@@ -1,0 +1,49 @@
+<channels>
+  <channel>
+    <name>movement</name>
+    <description>
+      Website -> NAO: 
+        movement commands
+      NAO -> Website: 
+        success / failure / progress reports
+    </description>
+  </channel>
+  <channel>
+    <name>joint</name>
+    <description>
+      Website -> NAO: 
+        subscribe / unsubscribe commands
+      NAO -> Website: 
+        periodic reports of joint positions
+    </description>
+  </channel>
+  <channel>
+    <name>camera</name>
+    <description>
+      Website -> NAO: 
+        subscribe / unsubscribe commands
+      NAO -> Website: 
+        periodic image data
+    </description>
+  </channel>
+  <channel>
+    <name>script</name>
+    <description>
+      Website -> NAO: 
+        send script
+        query available scripts
+        request script
+      NAO -> Website: 
+        status messages
+    </description>
+  </channel>
+  <channel>
+    <name>execution</name>
+    <description>
+      Website -> NAO: 
+        execute script command
+      NAO -> Website: 
+        status messages
+    </description>
+  </channel>
+</channels>
