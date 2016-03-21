@@ -1,0 +1,11 @@
+<channels>
+  <channel>
+    <name>movement</name>
+    <description>
+      Website -> NAO
+        movement commands
+      NAO -> Website
+        success / failure / progress reports
+    </description>
+  </channel>
+</channels>
