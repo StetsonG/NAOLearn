@@ -73,7 +73,30 @@
   /*border: 1px solid black;
   border-radius: 15px;*/
 }
-#nao-body img {
+#nao-camera {
+  /*position: absolute;
+  right: 1em;
+  top: 1em;
+  width: 47.5%;
+  border: 1px solid black;
+  border-radius: 15px;*/
+}
+#nao-camera img {
+  position: relative;
+  left: 25%;
+  width: 50%;
+  border-radius: 15px;
+}
+#nao-diagram {
+  position: relative;
+  /*position: absolute;
+  right: 1em;
+  top: 1em;
+  width: 47.5%;
+  border: 1px solid black;
+  border-radius: 15px;*/
+}
+#nao-diagram img {
   position: absolute;
   top: 0;
   left: 0;
