@@ -1,90 +1,82 @@
-h1, div {
-  display: block;
-}
-
-section, article {
-  margin: 1em;
-  border-style: solid;
-}
-
-section {
-  border-width: 1px;
-  border-color: #333;
-}
-
-article {
-  border-width: 2px;
-  border-color: #33e;
-}
-
-h1 {
-  color: #8ce;
-}
-
-.collapsable .collapsable-content {
- 
- display: none;
- 
-}
-
-.collapsable[data-collapsed="false"] .collapsable-content {
-  display: initial;
-}
-
-.collapsable .restore, .collapsable .minimize {
-  margin: 5px;
-}
-
-.collapsable .restore img, .collapsable .minimize img {
-  width: 25px;
-  height: 25px;
-  /*
-  border-style: solid;
-  border-width: 2px;
-  border-color: red;
-  */
-}
-
-.collapsable .restore {
-  display: initial;
-}
-
-.collapsable .restore img {
-  display: initial;
-}
-
-.collapsable .minimize {
+.html-variable, .html-marker {
   display: none;
 }
-
-#controller-container {
-  position: relative;
-  width: 40%;
+#body {
+  padding: 1em;
+  border: 5px solid #ddf;
+  border-radius: 10px;
+}
+#tab-labels {
+  /* display: inline; */
+  margin-bottom: .5em;
+  padding: 5px;
+  border: 1px solid #33e;
+  border-radius: 5px;
+}
+.tab-label {
+  margin-right: 5px;
+  padding: 2px;
+  border: 1px solid #8ce;
+  border-radius: 2.5px;
+  color: #33e;
+  font-weight: bold;
+}
+#modes {
+  padding: 1em;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+.mode {
+  display: none;
+}
+#nao-joints {
   background-color: gray;
-  border-style: solid;
-  border-width: 2px;
-  border-color: black;
+  border: 1px solid black;
+  border-radius: 20px;
 }
-
-#show, #edit {
+#nao-joints .inner {
+  position: relative;
+  padding: 1em;
+  /*border: 1px solid black;*/
+}
+#nao-joints-forms {
+  position: relative;
+  width: 47.5%;
+  background-color: #ccc;
+  border: 1px solid black;
+  border-radius: 15px;
+}
+#nao-joints-show, #nao-joints-edit {
+  diplay: block;
   width: 95%;
-  border-style: solid;
-  border-width: 2px;
+  padding: .5em;
+  /*border-style: solid;
+  border-width: 2px;*/
 }
-
-#show {
+#nao-joints-show {
   margin: .5em;
-  border-color: red;
+  /*background-color: #f88;
+  border-color: red;*/
 }
-
-#edit {
+#nao-joints-edit {
   position: absolute;
   left: .5em;
-  top: .5em;
-  border-color: green;
+  top: 0;
+  /*background-color: #8f8;
+  border-color: green;*/
 }
-
 #nao-body {
-  position: relative;
-  width: 40%;
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  width: 47.5%;
+  /*border: 1px solid black;
+  border-radius: 15px;*/
+}
+#nao-body img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 15px;
 }

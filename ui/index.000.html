@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Xiim - NAOLearn</title>
+    <!--link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"-->
+    <link href='main.css' rel="stylesheet"/>
+    <link href='range.css' rel="stylesheet"/>
+    <link href='range.show.css' rel="stylesheet"/>
+    <script type="text/javascript" src="jquery.js"></script>
+    <!--script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script-->
+  </head>
+  <body>
+    <head><h1>NAOLearn Portal</head>
+    </section>
+    <article class="collapsable"><h1>Demo Mode<a class="restore"><img src="restore.png"/></a><a class="minimize"><img src="minimize.png"/></a></h1><div class="collapsable-content">
+      <p>Demo Mode stuff</p>
+    </div></article>
+    <article class="collapsable"><h1>Exercise Mode<a class="restore"><img src="restore.png"/></a><a class="minimize"><img src="minimize.png"/></a></h1><div class="collapsable-content">
+      <p>Exercise Mode stuff</p>
+    </div></article>
+    <article class="collapsable"><h1>Assignment Mode<a class="restore"><img src="restore.png"/></a><a class="minimize"><img src="minimize.png"/></a></h1><div class="collapsable-content">
+      <p>Assignment Mode stuff</p>
+    </div></article>
+    <section data-collapsed="false" class="collapsable"><h1>NAO Body Controller<a class="restore"><img src="restore.png"/></a><a class="minimize"><img src="minimize.png"/></a></h1><div class="collapsable-content">
+      <div id="controller-container"><form id="show">
+        <label class="show-slide-label" for="headp-show">Head Pitch</label><br/>
+          <input type="range" class="show-slide" name="headp-show" id="headp-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="heady-show">Head Yaw</label><br/>
+          <input type="range" class="show-slide" name="heady-show" id="heady-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="rshlr-show">Right Shoulder Roll</label><br/>
+          <input type="range" class="show-slide" name="rshlr-show" id="rshlr-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="rshlp-show">Right Shoulder Pitch</label><br/>
+          <input type="range" class="show-slide" name="rshlp-show" id="rshlp-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="relbr-show">Right Elbow Roll</label><br/>
+          <input type="range" class="show-slide" name="relbr-show" id="relbr-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="relby-show">Right Elbow Yaw</label><br/>
+          <input type="range" class="show-slide" name="relby-show" id="relby-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="rwriy-show">Right Wrist Yaw</label><br/>
+          <input type="range" class="show-slide" name="rwriy-show" id="rwriy-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="rhand-show">Right Hand</label><br/>
+          <input type="range" class="show-slide" name="rhand-show" id="rhand-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="lshlr-show">Left Shoulder Roll</label><br/>
+          <input type="range" class="show-slide" name="lshlr-show" id="lshlr-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="lshlp-show">Left Shoulder Pitch</label><br/>
+          <input type="range" class="show-slide" name="lshlp-show" id="lshlp-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="lelbr-show">Left Elbow Roll</label><br/>
+          <input type="range" class="show-slide" name="lelbr-show" id="lelbr-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="lelby-show">Left Elbow Yaw</label><br/>
+          <input type="range" class="show-slide" name="lelby-show" id="lelby-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="lwriy-show">Left Wrist Yaw</label><br/>
+          <input type="range" class="show-slide" name="lwriy-show" id="lwriy-show" value="50" min="0" max="100"><br/>
+        <label class="show-slide-label" for="lhand-show">Left Hand</label><br/>
+          <input type="range" class="show-slide" name="lhand-show" id="lhand-show" value="50" min="0" max="100"><br/>
+      </form>
+      <form id="edit">
+        <br/><input type="range" class="edit-slide" name="headp-edit" id="headp-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="heady-edit" id="heady-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="rshlr-edit" id="rshlr-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="rshlp-edit" id="rshlp-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="relbr-edit" id="relbr-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="relby-edit" id="relby-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="rwriy-edit" id="rwriy-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="rhand-edit" id="rhand-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="lshlr-edit" id="lshlr-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="lshlp-edit" id="lshlp-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="lelbr-edit" id="lelbr-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="lelby-edit" id="lelby-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="lwriy-edit" id="lwriy-edit" value="50" min="0" max="100"><br/>
+        <br/><input type="range" class="edit-slide" name="lhand-edit" id="lhand-edit" value="50" min="0" max="100"><br/>
+      </form></div>
+      <div id="nao-body">
+        <img src="Nao-H21.jpg"/>
+      </div>
+    </div></section>
+  </body>
+</html>

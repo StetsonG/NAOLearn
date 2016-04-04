@@ -1,0 +1,90 @@
+h1, div {
+  display: block;
+}
+
+section, article {
+  margin: 1em;
+  border-style: solid;
+}
+
+section {
+  border-width: 1px;
+  border-color: #333;
+}
+
+article {
+  border-width: 2px;
+  border-color: #33e;
+}
+
+h1 {
+  color: #8ce;
+}
+
+.collapsable .collapsable-content {
+ 
+ display: none;
+ 
+}
+
+.collapsable[data-collapsed="false"] .collapsable-content {
+  display: initial;
+}
+
+.collapsable .restore, .collapsable .minimize {
+  margin: 5px;
+}
+
+.collapsable .restore img, .collapsable .minimize img {
+  width: 25px;
+  height: 25px;
+  /*
+  border-style: solid;
+  border-width: 2px;
+  border-color: red;
+  */
+}
+
+.collapsable .restore {
+  display: initial;
+}
+
+.collapsable .restore img {
+  display: initial;
+}
+
+.collapsable .minimize {
+  display: none;
+}
+
+#controller-container {
+  position: relative;
+  width: 40%;
+  background-color: gray;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+}
+
+#show, #edit {
+  width: 95%;
+  border-style: solid;
+  border-width: 2px;
+}
+
+#show {
+  margin: .5em;
+  border-color: red;
+}
+
+#edit {
+  position: absolute;
+  left: .5em;
+  top: .5em;
+  border-color: green;
+}
+
+#nao-body {
+  position: relative;
+  width: 40%;
+}
