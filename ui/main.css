@@ -61,7 +61,7 @@
 #nao-joints-edit {
   position: absolute;
   left: .5em;
-  top: 0;
+  top: .5em;
   /*background-color: #8f8;
   border-color: green;*/
 }
