@@ -37,6 +37,12 @@ class MotionController() :
 		return self.robot.getAngles(jointNames, useSensors)
 
 
+	def openHand(self, handName):
+		self.robot.openHand(handName)
+
+	def closeHand(self, handName):
+		self.robot.closeHand(handName)
+
 	def setMoveStiffness(self, stiffness):
 		if stiffness >= 0 and stiffness <= 1:
 			self.move_stiffness = stiffness
