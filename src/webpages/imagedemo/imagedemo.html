@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beaglebone SCADA Demo</title>
+    <link href="static/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="static/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="static/socket.io.js"></script>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="static/excanvas.js"></script><![endif]-->
+    <script>
+$(function() {
+
+  WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
+  WEB_SOCKET_DEBUG = true;
+
+  // Socket.io specific code
+  var socket = io.connect('nao.fgcu.edu:8080/Camera', {
+    'reconnect': true,
+    'reconnection delay': 500,
+  });
+
+  socket.on('connect', function(data) {
+    socket.emit('subscribe');
+  });
+
+  socket.on('image', function(data) {
+    alert(data);    
+  });
+
+});
+  </script>
+  </head>
+<body>
+  
+</body>
+</html>

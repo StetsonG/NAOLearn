@@ -1,8 +1,6 @@
 #### https://github.com/abourget/gevent-socketio
 
-from gevent import monkey; monkey.patch_all()
 import gevent
-import psutil
 
 from socketio import socketio_manage
 from socketio.server import SocketIOServer
@@ -14,43 +12,43 @@ from socketio.mixins import BroadcastMixin
 #### New instance for each connected client
 class CameraNamespace(BaseNamespace, BroadcastMixin):
 
-    subscribed = False
-    updateRate = 100
+    self.subscribed = False
+    self.updateRate = 100
 
     # Runs on connection from new client
     def recv_connect(self):
+        self.imageHandler = ImageHandler()
+
         def sendimage():
-            while True:
-                if subscribed:
-                    ## TODO send camera image
-                gevent.sleep(updateRate)
+                if self.subscribed:
+                    self.emit("image", self.imageHandler.getLatestFrame())
+                self.timer = Timer(updateRate, sendimage())
+
         self.spawn(sendimage)
-        
+
     def on_subscribe(self, msg):
-        subscibed = true
+        self.subscibed = true
+        self.updateRate = 1.0/msg
 
     def on_unsubscribe(self, msg):
-        subscribed = false
+        self.subscribed = false
+
 
 class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
-    JointNames = []
-    JointSubscriptions = []
-    updateRate = 100
+    self.JointNames = []
+    self.JointSubscriptions = []
+    self.updateRate = 100
 
     # Runs on connection from new client
-    def recv_connect(self):
-        def sendimage():
-            while True:
-                ## TODO Check for subscriptions and send current joint values
-                gevent.sleep(updateRate)
-        self.spawn(sendimage)
+    #def recv_connect(self):
+
         
-    def on_subscribe(self, msg):
+    #def on_subscribe(self, msg):
         ## TODO Check for msg in JointNames
         ## Set appropriate JointSubscriptions[] to true
 
-    def on_unsubscribe(self, msg):
+    #def on_unsubscribe(self, msg):
         ## TODO Check for msg in JointNames
         ## Set appropriate JointSubscriptions[] to false
 
@@ -59,16 +57,16 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
     lastCommand = ""
 
     # Runs on connection from new client
-    def recv_connect(self):
+    #def recv_connect(self):
         ##
         
-    def on_verify(self, msg):
+    #def on_verify(self, msg):
         ## TODO Run command/script through interpreter to see if it is valid
 
-    def on_execute(self, msg):
+    #def on_execute(self, msg):
         ## TODO Run command/script through interpreter. If it verifies, execute the script
 
-    def on_execute_last(self, msg):
+    #def on_execute_last(self, msg):
         ## TODO Run last received command/script through interpreter. If it verifies, execute the script
 
 
@@ -101,7 +99,7 @@ def not_found(start_response):
 if __name__ == '__main__':
     # Start Socket IO Server
     print 'Listening on port http://0.0.0.0:80 and on port 10843 (flash policy server)'
-    SocketIOServer(('0.0.0.0', 80), Application(),
+    SocketIOServer(('0.0.0.0', 8080), Application(),
         resource="socket.io", policy_server=True,
         policy_listener=('0.0.0.0', 10843)).serve_forever()
 
