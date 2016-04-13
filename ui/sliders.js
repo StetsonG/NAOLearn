@@ -3,13 +3,15 @@ $(document).ready(function () {
 WEB_SOCKET_SWF_LOCATION = "WebSocketMain.swf";
 WEB_SOCKET_DEBUG = true;
 
-host = '';
+host = '69.88.163.32';
 
 // Socket.io specific code
 var socket = io.connect(host, {
   'reconnect': true,
   'reconnection delay': 500,
 });
+
+socket.emit('subscribe','')
 
 socket.on('speed', function(data) {
     // Add received data point to the graph
