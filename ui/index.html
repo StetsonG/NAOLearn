@@ -11,29 +11,33 @@
     <script type="text/javascript" src="sliders.js"></script>
   </head>
   <body>
-    <header></header>
+  <div id="page">
     <div id="body">
-      <nav id="tab-labels"></nav>
       <main id="modes">
-        <p class="html-marker" id="mode-insertion-point">mode-insertion-point</p>
+        <div id="modes-col">
+          <p class="html-marker" id="mode-insertion-point">mode-insertion-point</p>
+        </div>
         <section class="port" id="nao-joints">
           <h2>NAOBot Joint Controller</h2>
           <div class="inner">
+          <div id="nao-joints-left">
             <div id="nao-joints-forms">
               <form id="nao-joints-show"><p class="html-marker">Nao Joints Show<p></form>
               <form id="nao-joints-edit"><p class="html-marker">Nao Joints Edit<p></form>
             </div>
-            <div id="nao-body">
-              <div id="nao-camera">
-                <img src="t.gif"/>
-              </div>
-              <div id="nao-diagram">
-                <img id="nao-diagram-img" src="nao_joints_none.jpg"/>
-              </div>
+          </div>
+          <div id="nao-joints-right">
+            <div id="nao-camera">
+              <img src="t.gif"/>
             </div>
+            <div id="nao-diagram">
+              <img id="nao-diagram-img" src="nao_joints_none.jpg"/>
+            </div>
+          </div>
           </div>
         </section>
       </main>
     </div>
+  </div>
   </body>
 </html>
