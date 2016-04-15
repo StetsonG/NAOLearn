@@ -160,7 +160,6 @@ function set_mode(mode) {
           $(this).css('display','none');
         }
       });
-      $('#'+mode+'-Mode').an
       $('#'+p_mode+'-Mode').animate({
         'width': '3.5in',
         'height': '3em',
@@ -194,6 +193,43 @@ function set_mode(mode) {
       });
     }
     else {
+      $('#'+p_mode+'-Mode .tab-label h2').css('display','none');
+      $('#'+p_mode+'-Mode').animate({
+        'width': '0',
+        'height': '0',
+        'margin': '0',
+      },{
+        duration: dur,
+        start: function() {
+          $('#'+p_mode+'-Mode .mode-main').css('display','none');
+        },
+        complete: function() {
+          $(this).css({
+            'display': 'none'
+          });
+        }
+      });
+      $('#'+p_mode+'-Mode .mode-exit').fadeOut({
+        duration: dur,
+        queue: false
+      });
+      $('#'+mode+'-Mode .tab-label h2').css('display','block');
+      $('#'+mode+'-Mode').css('display','flex');
+      $('#'+mode+'-Mode').animate({
+        'width': '100%',
+        'height': '100%',
+        'margin': '0'
+      },{
+        duration: dur,
+        queue: false,
+        complete: function() {
+          $('#'+mode+'-Mode .mode-main').css('display','block');
+        }
+      });
+      $('#'+mode+'-Mode .mode-exit').fadeIn({
+        duration: dur,
+        queue: false
+      });
     }
     $('#modes').attr('data-mode',mode);
     if( mode == 'Exercise' )
@@ -224,6 +260,7 @@ function fillExercise() {
 function fillAssignment() {
   var mode = $('#Assignment-Mode');
   var main = $('#Assignment-Mode .mode-main');
+  main.append('<p>In Assignment mode, you can select one one the scripts below to run on the NAO. You can view, create, edit and upload scripts. Status messages we be displayed in the Execution section and the current position of all the joints are shown in the sliders to the left.  You can also control the joints with the white sliders.</p>');
   addSelection(main,'Assignment','Scripts');
   main.append('<div class="spacer"></div>');
   addExecution(main,'Assignment');
