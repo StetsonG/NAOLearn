@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Beaglebone SCADA Demo</title>
+    <title>NAO Motion Demo</title>
     <link href="static/css/style.css" rel="stylesheet">
     <script type="text/javascript" src="static/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="static/socket.io.js"></script>
@@ -14,21 +14,31 @@ $(function() {
 
   console.log("Connecting to websocket");
   // Socket.io specific code
-  var socket = io.connect('192.168.0.102:8080/Camera', {
+  var commandSocket = io.connect('nao.fgcu.edu:8080/Command', {
     'reconnect': true,
     'reconnection delay': 500,
   });
 
   console.log("Continuing");
 
-  socket.on('connect', function(data) {
-    //socket.emit('subscribe', "30");
+  commandSocket.on('connect', function(data) {
     console.log("Connected");
+
+    commandSocket.emit('movejoint', "0,0.5");
+    window.setTimeout(function(){
+      commandSocket.emit('movejoint', "0,-0.5")
+    }, 2000);
+
+
   });
 
-  socket.on('image', function(data) {
-    console.log(data);    
+  commandSocket.on('status', function(data) {
+    console.log("Status: " + data);
   });
+
+  
+
+  
 
 });
   </script>

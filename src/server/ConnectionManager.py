@@ -9,12 +9,26 @@ from socketio.mixins import BroadcastMixin
 
 from threading import Timer
 import time
+import logging
 
 from ImageHandler import ImageHandler
 from MotionController import MotionController
 
 motionController = None
 imageHandler = None
+
+JointNames = [
+        'HeadYaw', 
+        'HeadPitch', 
+        'LShoulderPitch', 
+        'LShoulderRoll', 
+        'LElbowYaw', 
+        'LElbowRoll', 
+        'LWristYaw',
+        'RShoulderPitch',
+        'RShoulderRoll',
+        'RElbowYaw',
+        'RWristYaw']
 
 #### Socket IO communication between Python and webpage's Javascript
 #### New instance for each connected client
@@ -45,18 +59,7 @@ class CameraNamespace(BaseNamespace, BroadcastMixin):
 
 class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
-    JointNames = [
-        'HeadYaw', 
-        'HeadPitch', 
-        'LShoulderPitch', 
-        'LShoulderRoll', 
-        'LElbowYaw', 
-        'LElbowRoll', 
-        'LWristYaw',
-        'RShoulderPitch',
-        'RShoulderRoll',
-        'RElbowYaw',
-        'RWristYaw']
+    
     JointSubscriptions = []
     updateRate = 100
 
@@ -83,25 +86,25 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
 class CommandNamespace(BaseNamespace, BroadcastMixin):
 
-    lastCommand = ""
-
-    # Runs on connection from new client
-    #def recv_connect(self):
-        ##
-        
-    #def on_verify(self, msg):
-        ## TODO Run command/script through interpreter to see if it is valid
-
-    #def on_execute(self, msg):
-        ## TODO Run command/script through interpreter. If it verifies, execute the script
-
-    #def on_execute_last(self, msg):
-        ## TODO Run last received command/script through interpreter. If it verifies, execute the script
+    def recv_connect(self):
+        print "Command channel connected"
 
     def on_movejoint(self, msg):
         try: 
+            # Strip and split msg by commas
+            # valid msg format is "0,0.5" as "jointID,angle"
+
             msg = [x.strip() for x in msg.split(',')]
-            motionController.setJointAngle(msg[0], float(msg[1]))
+
+            #Look up JointName in global JointNames array
+            jointID = int(msg[0])
+            jointName = JointNames[jointID]
+
+            jointAngle = float(msg[1])
+
+            print "setJointAngle(" + jointName + ", ", jointAngle, ")"
+            motionController.setJointAngle(jointName, jointAngle)
+
             self.emit('status', "MoveJoint Command Succeeded")
         except:
             self.emit('status', "MoveJoint Command Failed")
@@ -111,6 +114,15 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
 
     def on_closehand(self, msg):
         motionController.closeHand(msg)
+
+    #def on_verify(self, msg):
+        ## TODO Run command/script through interpreter to see if it is valid
+
+    #def on_execute(self, msg):
+        ## TODO Run command/script through interpreter. If it verifies, execute the script
+
+    #def on_execute_last(self, msg):
+        ## TODO Run last received command/script through interpreter. If it verifies, execute the script
 
 
 
@@ -125,9 +137,10 @@ class Application(object):
 
 
         if path.startswith("socket.io"):
-            socketio_manage(environ, {'/Camera': CameraNamespace})
-            socketio_manage(environ, {'/JointPosition': JointPositionNamespace})
-            socketio_manage(environ, {'/Command': CommandNamespace})
+            socketio_manage(environ, {
+                '/Camera': CameraNamespace,
+                '/JointPosition': JointPositionNamespace,
+                '/Command': CommandNamespace})
         else:
             return not_found(start_response)
 
@@ -140,6 +153,7 @@ def not_found(start_response):
 #### Main application loop
 if __name__ == '__main__':
 
+    logging.basicConfig()
     imageHandler = ImageHandler()
     motionController = MotionController()
 
