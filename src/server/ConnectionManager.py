@@ -7,28 +7,37 @@ from socketio.server import SocketIOServer
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin
 
+from threading import Timer
+import time
+
+from ImageHandler import ImageHandler
+from MotionController import MotionController
+
+motionController = None
+imageHandler = None
 
 #### Socket IO communication between Python and webpage's Javascript
 #### New instance for each connected client
 class CameraNamespace(BaseNamespace, BroadcastMixin):
 
-    self.subscribed = False
-    self.updateRate = 100
 
     # Runs on connection from new client
     def recv_connect(self):
-        self.imageHandler = ImageHandler()
-
+        self.subscribed = True
+        self.framerate = 0.5
+        print "Camera channel connected"
+        self.emit('image', "Test!")
         def sendimage():
-                if self.subscribed:
-                    self.emit("image", self.imageHandler.getLatestFrame())
-                self.timer = Timer(updateRate, sendimage())
-
+                while self.subscribed:
+                    frame = imageHandler.getLatestFrame()
+                    self.emit("image", frame)
+                    print("sending: ", frame)
+                    time.sleep(1.0/self.framerate)
         self.spawn(sendimage)
 
     def on_subscribe(self, msg):
         self.subscibed = true
-        self.updateRate = 1.0/msg
+        self.framerate = msg
 
     def on_unsubscribe(self, msg):
         self.subscribed = false
@@ -36,12 +45,32 @@ class CameraNamespace(BaseNamespace, BroadcastMixin):
 
 class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
-    self.JointNames = []
-    self.JointSubscriptions = []
-    self.updateRate = 100
+    JointNames = [
+        'HeadYaw', 
+        'HeadPitch', 
+        'LShoulderPitch', 
+        'LShoulderRoll', 
+        'LElbowYaw', 
+        'LElbowRoll', 
+        'LWristYaw',
+        'RShoulderPitch',
+        'RShoulderRoll',
+        'RElbowYaw',
+        'RWristYaw']
+    JointSubscriptions = []
+    updateRate = 100
 
     # Runs on connection from new client
-    #def recv_connect(self):
+    def recv_connect(self):
+        self.subscribed = True
+
+        print "JointPosition channel connected"
+        def sendPositions():
+            while self.subscribed:
+                self.emit('positions', motionController.getAllJointAngles())
+                time.sleep(0.5)
+
+        self.spawn(sendPositions)
 
         
     #def on_subscribe(self, msg):
@@ -69,6 +98,19 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
     #def on_execute_last(self, msg):
         ## TODO Run last received command/script through interpreter. If it verifies, execute the script
 
+    def on_movejoint(self, msg):
+        try: 
+            msg = [x.strip() for x in msg.split(',')]
+            motionController.setJointAngle(msg[0], float(msg[1]))
+            self.emit('status', "MoveJoint Command Succeeded")
+        except:
+            self.emit('status', "MoveJoint Command Failed")
+
+    def on_openhand(self, msg):
+        motionController.openHand(msg)
+
+    def on_closehand(self, msg):
+        motionController.closeHand(msg)
 
 
 
@@ -97,8 +139,12 @@ def not_found(start_response):
 
 #### Main application loop
 if __name__ == '__main__':
+
+    imageHandler = ImageHandler()
+    motionController = MotionController()
+
     # Start Socket IO Server
-    print 'Listening on port http://0.0.0.0:80 and on port 10843 (flash policy server)'
+    print 'Listening on port http://0.0.0.0:8080 and on port 10843 (flash policy server)'
     SocketIOServer(('0.0.0.0', 8080), Application(),
         resource="socket.io", policy_server=True,
         policy_listener=('0.0.0.0', 10843)).serve_forever()

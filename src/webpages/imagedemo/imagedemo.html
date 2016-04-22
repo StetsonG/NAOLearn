@@ -12,18 +12,22 @@ $(function() {
   WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
   WEB_SOCKET_DEBUG = true;
 
+  console.log("Connecting to websocket");
   // Socket.io specific code
-  var socket = io.connect('nao.fgcu.edu:8080/Camera', {
+  var socket = io.connect('192.168.0.102:8080/Camera', {
     'reconnect': true,
     'reconnection delay': 500,
   });
 
+  console.log("Continuing");
+
   socket.on('connect', function(data) {
-    socket.emit('subscribe');
+    //socket.emit('subscribe', "30");
+    console.log("Connected");
   });
 
   socket.on('image', function(data) {
-    alert(data);    
+    console.log(data);    
   });
 
 });

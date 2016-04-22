@@ -1,11 +1,13 @@
 from naoqi import ALProxy
 import time
 
+nao_ip = "192.168.0.102"
+#nao_ip = "lain.local"
 
 class MotionController() :
 
 	def __init__(self):
-		self.robot = ALProxy("ALMotion", "lain.local", 9559)
+		self.robot = ALProxy("ALMotion", nao_ip, 9559)
 		self.move_stiffness = 1
 		self.rest_stiffness = 0
 		self.joint_speed = 0.1
@@ -35,6 +37,10 @@ class MotionController() :
 	def getJointAngles(self, jointNames):
 		useSensors = True
 		return self.robot.getAngles(jointNames, useSensors)
+
+	def getAllJointAngles(self):
+		useSensors = True
+		return self.robot.getAngles("Body", useSensors)
 
 
 	def openHand(self, handName):
