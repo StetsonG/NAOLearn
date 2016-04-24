@@ -216,6 +216,16 @@ html, body {
   /*background-color: #f88;
   border-color: red;*/
 }
+#nao-joints-mask {
+  position: absolute;
+  left: .5em;
+  top: .5em;
+  width: 95%;
+  height: 95%;
+  opacity: 0;
+  /*background-color: #f88;
+  border-color: red;*/
+}
 #nao-joints-edit {
   position: absolute;
   left: .5em;
@@ -263,10 +273,21 @@ html, body {
   border: 1px solid black;
   border-radius: 2.5px;
 }
+.entry-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: stretch;
+}
 .entry-prompt {
+  flex-grow: 1;
   color: white;
   background-color: black;
   border: 2px solid white;
+}
+.entry-submit {
+  flex-grow: 0;
 }
 h2 {
   color: #33e;

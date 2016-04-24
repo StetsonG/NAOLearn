@@ -27,9 +27,9 @@ $('.mode-exit').click(function() {
   $('.tab-label[data-mode='+$(this).attr('data-mode')+']').attr('data-mode-action','set');
 });
 
-fillDemo();
-fillExercise();
-fillAssignment();
+fill_demo();
+fill_exercise();
+fill_assignment();
 
 var joints = {
   headp: 'Head Pitch', heady: 'Head Yaw',
@@ -40,21 +40,31 @@ var joints = {
   lelbr: 'Left Elbow Roll', lelby: 'Left Elbow Yaw',
   lwriy: 'Left Wrist Yaw', lhand: 'Left Hand',
 };
+jointsran = {
+  headp: [-1,1,100], heady: [-1,1,100],
+  rshlr: [-1,1,100], rshlp: [-1,1,100],
+  relbr: [-1,1,100], relby: [-1,1,100],
+  rwriy: [-1,1,100], rhand: [-1,1,100],
+  lshlr: [-1,1,100], lshlp: [-1,1,100],
+  lelbr: [-1,1,100], lelby: [-1,1,100],
+  lwriy: [-1,1,100], lhand: [-1,1,100],
+};
 for( var j in joints ) {
   console.log(j);
   var joint = joints[j];
+  var jointran = jointsran[j];
   console.log(joint);
   $('#nao-joints-show').append('<label class="show-slide-label" for="'+j+'-show">'+joint+'</label>');
   $('#nao-joints-show').append('<br/>');
-  $('#nao-joints-show').append('<input type="range" data-joint-name="'+j+'" class="show-slide" name="'+j+'-show" id="'+j+'-show" value="'+Math.floor(Math.random() * 101)+'" min="0" max="100" readonly>');
+  $('#nao-joints-show').append('<div style="display:inline-block; position:relative;"><input type="range" data-joint-name="'+j+'" class="show-slide" name="'+j+'-show" id="'+j+'-show" value="'+Math.floor(Math.random() * 101)+'" min="0" max="'+jointran[2]+'"><div class="show-mask" data-joint-name="'+j+'" style="position:absolute; left:0; right:0; top:0; bottom:0;"></div></div>');
   $('#nao-joints-show').append('<br/>');
   $('#nao-joints-edit').append('<label class="edit-slide-label" for="'+j+'-show">'+joint+'</label>');
   $('#nao-joints-edit').append('<br/>');
-  $('#nao-joints-edit').append('<input type="range" data-joint-name="'+j+'" class="edit-slide" name="'+j+'-edit" id="'+j+'-edit" value="'+Math.floor(Math.random() * 101)+'" min="0" max="100">');
+  $('#nao-joints-edit').append('<input type="range" data-joint-name="'+j+'" class="edit-slide" name="'+j+'-edit" id="'+j+'-edit" value="'+Math.floor(Math.random() * 101)+'" min="0" max="'+jointran[2]+'">');
   $('#nao-joints-edit').append('<br/>');
 }
 
-$('.show-slide').each(function() {
+$('.show-mask').each(function() {
   $(this).mouseenter(function() {
     $('#nao-diagram-img').attr('src','nao_joints_'+$(this).attr('data-joint-name')+'.jpg');
   });
@@ -239,51 +249,65 @@ function set_mode(mode) {
   }
 }
 
-function fillDemo() {
+function fill_demo() {
   var mode = $('#Demo-Mode');
   var main = $('#Demo-Mode .mode-main');
   main.append('<p>In Demo mode, you can select one one the demos below to run on the NAO. Status messages we be displayed in the Execution section and the current position of all the joints are shown in the sliders to the left.</p>');
-  addSelection(main,'Demo','Demos');
+  add_selection(main,'Demo','Demos',get_demo_list());
   main.append('<div class="spacer"></div>');
-  addExecution(main,'Demo');
+  add_execution(main,'Demo');
 }
 
-function fillExercise() {
+function fill_exercise() {
   var mode = $('#Exercise-Mode');
   var main = $('#Exercise-Mode .mode-main');
   main.append('<p>In Exercise mode, you can enter commands to control the NAO. Status messages we be displayed in the Execution section and the current position of all the joints are shown in the sliders to the left.  You can also control the joints with the white sliders.</p>');
-  addEntry(main,'Exercise');
+  add_entry(main,'Exercise');
   main.append('<div class="spacer"></div>');
-  addExecution(main,'Exercise');
+  add_execution(main,'Exercise');
 }
 
-function fillAssignment() {
+function fill_assignment() {
   var mode = $('#Assignment-Mode');
   var main = $('#Assignment-Mode .mode-main');
   main.append('<p>In Assignment mode, you can select one one the scripts below to run on the NAO. You can view, create, edit and upload scripts. Status messages we be displayed in the Execution section and the current position of all the joints are shown in the sliders to the left.  You can also control the joints with the white sliders.</p>');
-  addSelection(main,'Assignment','Scripts');
+  add_selection(main,'Assignment','Scripts');
   main.append('<div class="spacer"></div>');
-  addExecution(main,'Assignment');
+  add_execution(main,'Assignment');
 }
 
-function addSelection(main,mode,types) {
+function get_demo_list() {
+  var items = [];
+  items[0] = $('<h3>Demo #1</h3>');
+  items[1] = $('<h3>Demo #2</h3>');
+  items[2] = $('<h3>Demo #3</h3>');
+  return items;
+}
+
+function add_selection(main,mode,types,items) {
   selection = $('<section id="'+mode+'-Selection"></section>');
-  selection.append('<h2>Available '+types+'</h2>');
+  available = $('<h2>Available '+types+'</h2>');
+  for( var i in items ) {
+    var item = items[i];
+    available.append(item);
+  }
+  selection.append(available);
   main.append(selection);
 }
 
-function addExecution(main,mode) {
+function add_execution(main,mode) {
   execution = $('<section id="'+mode+'-Execution"></section>');
   execution.append('<h2>Execution</h2>');
   execution.append('<code class="execution-text" id="'+mode+'-Execution-Text">&gt;&gt;</code>');
   main.append(execution);
 }
 
-function addEntry(main,mode) {
+function add_entry(main,mode) {
   entry = $('<section id="'+mode+'-Entry"></section>');
   entry.append('<h2>Command Prompt</h2>');
-  prompt = $('<form></form>');
-  prompt.append('<input class="entry-prompt" style="width: 100%;" id="'+mode+'-Entry-Prompt" type="text"/>');
+  prompt = $('<form class="entry-form"></form>');
+  prompt.append('<input class="entry-prompt" id="'+mode+'-Entry-Prompt" type="text"/>');
+  prompt.append('<input class="entry-submit" type="submit" value="submit"/>');
   entry.append(prompt);
   main.append(entry);
 }
