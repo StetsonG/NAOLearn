@@ -70,7 +70,7 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
         print "JointPosition channel connected"
         def sendPositions():
             while self.subscribed:
-                self.emit('positions', motionController.getAllJointAngles())
+                self.emit('positions', motionController.getJointAngle(JointNames))
                 time.sleep(0.5)
 
         self.spawn(sendPositions)
