@@ -1,0 +1,13 @@
+set HeadYaw 0.6
+set LShoulderPitch -1.0
+set RShoulderPitch -1.0
+open LHand
+open RHand
+
+wait 2
+
+set HeadYaw -0.6
+set LShoulderPitch 1.0
+set RShoulderPitch 1.0
+close LHand
+close RHand
