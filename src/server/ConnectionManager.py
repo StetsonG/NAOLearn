@@ -11,6 +11,8 @@ from threading import Timer
 import time
 import logging
 
+from RepeatedTimer import RepeatedTimer
+
 from ImageHandler import ImageHandler
 from MotionController import MotionController
 
@@ -41,13 +43,13 @@ class CameraNamespace(BaseNamespace, BroadcastMixin):
         self.framerate = 0.5
         print "Camera channel connected"
         self.emit('image', "Test!")
-        def sendimage():
-                while self.subscribed:
-                    frame = imageHandler.getLatestFrame()
-                    self.emit("image", frame)
-                    print("sending: ", frame)
-                    time.sleep(1.0/self.framerate)
-        self.spawn(sendimage)
+
+        def sendImage():
+            frame = imageHandler.getLatestFrame()
+            self.emit("image", frame)
+            print("sending: ", frame)
+
+        self.timer = RepeatedTimer(1.0/self.framerate, sendImage)
 
     def on_subscribe(self, msg):
         self.subscibed = true
@@ -69,11 +71,9 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
         print "JointPosition channel connected"
         def sendPositions():
-            while self.subscribed:
-                self.emit('positions', motionController.getJointAngle(JointNames))
-                time.sleep(0.5)
+                self.emit('positionUpdate', motionController.getJointAngles(JointNames))
 
-        self.spawn(sendPositions)
+        self.timer = RepeatedTimer(1, sendPositions)
 
         
     #def on_subscribe(self, msg):
