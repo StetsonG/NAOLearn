@@ -14,7 +14,7 @@ $(function() {
 
   console.log("Connecting to websocket");
   // Socket.io specific code
-  var socket = io.connect('192.168.0.102:8080/Camera', {
+  var socket = io.connect('nao.fgcu.edu:8080/Camera', {
     'reconnect': true,
     'reconnection delay': 500,
   });
@@ -27,13 +27,16 @@ $(function() {
   });
 
   socket.on('image', function(data) {
-    console.log(data);    
+    console.log("Image Received");   
+    $("#image").attr('src',  'data:image/jpg;base64,'+ data); 
   });
 
 });
   </script>
   </head>
 <body>
-  
+  <div style="width: 640px; height: 480px; border: 2px solid black">
+      <img id="image" src="" width="640" height="480"/>
+  </div>
 </body>
 </html>

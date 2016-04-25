@@ -1,8 +1,8 @@
 from naoqi import ALProxy
 import time
 
-nao_ip = "192.168.0.102"
-#nao_ip = "lain.local"
+#nao_ip = "192.168.0.102"
+nao_ip = "lain.local"
 
 class MotionController() :
 

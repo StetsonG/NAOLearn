@@ -40,23 +40,26 @@ class CameraNamespace(BaseNamespace, BroadcastMixin):
     # Runs on connection from new client
     def recv_connect(self):
         self.subscribed = True
-        self.framerate = 0.5
+        self.framerate = 10
         print "Camera channel connected"
-        self.emit('image', "Test!")
 
         def sendImage():
             frame = imageHandler.getLatestFrame()
-            self.emit("image", frame)
-            print("sending: ", frame)
+            self.emit("image", frame.encode('base64'))
 
         self.timer = RepeatedTimer(1.0/self.framerate, sendImage)
 
     def on_subscribe(self, msg):
-        self.subscibed = true
-        self.framerate = msg
+        self.timer.start()
 
     def on_unsubscribe(self, msg):
-        self.subscribed = false
+        self.timer.stop()
+
+    def on_disconnect(self):
+        self.timer.stop()
+
+    def __del__(self):
+        self.timer.stop()
 
 
 class JointPositionNamespace(BaseNamespace, BroadcastMixin):
@@ -75,7 +78,12 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
         self.timer = RepeatedTimer(1, sendPositions)
 
-        
+    def on_disconnect(self):
+        self.timer.stop()
+
+    def __del__(self):
+        self.timer.stop()
+
     #def on_subscribe(self, msg):
         ## TODO Check for msg in JointNames
         ## Set appropriate JointSubscriptions[] to true

@@ -3,20 +3,19 @@ import time
 from threading import Timer
 import Image
 import vision_definitions
+import StringIO
 
 
-nao_ip = "nao.fgcu.edu"
-#nao_ip = "lain.local"
+#nao_ip = "nao.fgcu.edu"
+nao_ip = "lain.local"
 
 class ImageHandler():
 
 	
 	def __init__(self):
 		self.video = ALProxy("ALVideoDevice", nao_ip, 9559)
-		self.resolution = 2
-		# self.colorSpace = 11
-		# self.resolution = vision_definitions.kQVGA
-		self.colorSpace = vision_definitions.kYUVColorSpace
+		self.resolution = 2 #VGA
+		self.colorSpace = 11 #RGB
 		self.framerate = 30
 		self.nameID = self.video.subscribe("NAOLearn", self.resolution, self.colorSpace, self.framerate)
 
@@ -26,22 +25,25 @@ class ImageHandler():
 
 	def getLatestFrame(self):
 
-		try:
+		#try:
 
-			alimage = self.video.getImageLocal(self.nameID)
+		alimage = self.video.getImageRemote(self.nameID)
 
-			imageWidth = alimage[0]
-			imageHeight = alimage[1]
-			imageArray = alimage[6]
+		imageWidth = alimage[0]
+		imageHeight = alimage[1]
+		imageArray = alimage[6]
 
-			image = Image.fromstring("RGB", (imageWidth, imageHeight), imageArray)
+		image = Image.fromstring("RGB", (imageWidth, imageHeight), imageArray)
 
-			output = StringIO.StringIO()
+		output = StringIO.StringIO()
 
-			image.save(output, format="JPEG",quality=80, optimize=True)
+		image.save(output, format="JPEG",quality=80, optimize=True)
 
-			return output
+		outputString = output.getvalue()
+		output.close()
 
-		except:
-			return ""
+		return outputString
+
+		#except:
+			#return ""
 
