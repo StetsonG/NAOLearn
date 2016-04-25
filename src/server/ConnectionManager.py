@@ -123,6 +123,12 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
     def on_closehand(self, msg):
         motionController.closeHand(msg)
 
+    def on_simplescript(self, msg):
+        print "Received Script: \n" + msg
+        udata=msg.decode("utf-8")
+        asciidata=udata.encode("ascii","ignore")
+        motionController.runSimpleScript(asciidata)
+
     #def on_verify(self, msg):
         ## TODO Run command/script through interpreter to see if it is valid
 

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NAO Script Demo</title>
+    <link href="static/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="static/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="static/socket.io.js"></script>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="static/excanvas.js"></script><![endif]-->
+    <script>
+$(function() {
+
+  WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
+  WEB_SOCKET_DEBUG = true;
+
+  console.log("Connecting to websocket");
+  // Socket.io specific code
+  var commandSocket = io.connect('nao.fgcu.edu:8080/Command', {
+    'reconnect': true,
+    'reconnection delay': 500,
+  });
+
+
+
+  console.log("Continuing");
+
+  commandSocket.on('connect', function(data) {
+    console.log("Command Channel Connected");
+  });
+
+  commandSocket.on('status', function(data) {
+    console.log("Status: " + data);
+  });
+  
+  $('input#sendscript').click(function() {
+    var text = $('textarea#scripttext').val();
+    commandSocket.emit('simplescript', text)
+  });
+  
+
+});
+  </script>
+  </head>
+<body>
+  <textarea id="scripttext" rows="20" cols="50">
+set HeadYaw 0.6
+set LShoulderPitch -1.0
+set RShoulderPitch -1.0
+open LHand
+open RHand
+
+wait 2
+
+set HeadYaw -0.6
+set LShoulderPitch 1.0
+set RShoulderPitch 1.0
+close LHand
+close RHand  
+  </textarea>
+  <input id="sendscript" type="button" value="Send Script">
+</body>
+</html>

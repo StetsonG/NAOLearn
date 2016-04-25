@@ -78,7 +78,7 @@ class MotionController() :
 
 			if len(tokens) >= 3 and tokens[0] == "set":
 				self.setJointAngle(tokens[1], float(tokens[2]))
-				time.sleep(1)
+				#time.sleep(1)
 
 			if len(tokens) >= 2 and tokens[0] == "open":
 				self.openHand(tokens[1])
