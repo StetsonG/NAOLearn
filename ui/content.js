@@ -364,14 +364,15 @@ function set_mode( mode ) {
       } );
     }
     $( '#modes' ).attr( 'data-mode', mode );
+    if( mode == 'None' )
+      stop_execution();
+    else
+      start_execution();
     if( mode == 'Exercise' ) {
       $( '#nao-joints-edit' ).css( 'display', 'block' );
-      start_execution();
     }
     else
       $( '#nao-joints-edit' ).css( 'display', 'none' );
-    if( p_mode == 'Exercise' )
-      stop_execution();
   }
 }
 
@@ -432,17 +433,38 @@ function fill_assignment() {
   var main = $( '#Assignment-Mode .mode-main' );
   main
       .append( '<p>In Assignment mode, you can select one one the scripts below to run on the NAO. You can view, create, edit and upload scripts. Status messages we be displayed in the Execution section and the current position of all the joints are shown in the sliders to the left.  You can also control the joints with the white sliders.</p>' );
-  add_selection( main, 'Assignment', 'Scripts' );
+  add_script( main, 'Assignment' );
   main.append( '<div class="spacer"></div>' );
   add_execution( main, 'Assignment' );
 }
 
+function create_demo(name) {
+  var demo = $('<div class="demo-row"></div>');
+  demo.append('<p>'+name+'</p>');
+  run = $('<img src="play.png" width="30" height="30" />');
+  run.click(function() {
+    var xmlhttp = new XMLHttpRequest();
+    var url = name+".sst";
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            send_command(xmlhttp.responseText);
+        }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  });
+  demo.append(run);
+  return demo;
+}
+
 function get_demo_list() {
 
+  var demos = ['open-pose','clap','fgcu-band'];
   var items = [];
-  items[0] = $( '<h3>Demo #1</h3>' );
-  items[1] = $( '<h3>Demo #2</h3>' );
-  items[2] = $( '<h3>Demo #3</h3>' );
+  for( var i in demos ) {
+    items[i] = create_demo(demos[i]);
+    console.log(items[i].html());
+  }
   return items;
 }
 
@@ -479,6 +501,23 @@ function add_entry( main, mode ) {
 
     send_command( $( '#' + mode + '-Entry-Prompt' ).val() );
     $( '#' + mode + '-Entry-Prompt' ).val( '' );
+  } );
+  entry.append( prompt );
+  main.append( entry );
+}
+
+function add_script( main, mode ) {
+
+  entry = $( '<section id="' + mode + '-Script"></section>' );
+  entry.append( '<h2>Command Prompt</h2>' );
+  prompt = $( '<form id="' + mode + '-Script-Form" class="script-form"></form>' );
+  prompt.append( '<textarea class="script-prompt" id="' + mode
+      + '-Script-Prompt" rows="20" cols="50" type="text"></textarea>' );
+  prompt.append( '<input class="script-submit" type="submit" value="submit"/>' );
+  prompt.submit( function() {
+
+    send_command( $( '#' + mode + '-Script-Prompt' ).val() );
+    $( '#' + mode + '-Script-Prompt' ).val( '' );
   } );
   entry.append( prompt );
   main.append( entry );

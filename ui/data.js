@@ -66,11 +66,11 @@ function get_joint_ranges() {
       ], [
           'RShoulderPitch', -2.0857, 2.0857, 1000, 'rshlp'
       ], [
-          'RShoulderRoll', -0.3142, 1.3265, 1000, 'rshlr'
+          'RShoulderRoll', 0.3142, -1.3265, 1000, 'rshlr'
       ], [
           'RElbowYaw', -2.0857, 2.0857, 1000, 'relby'
       ], [
-          'RElbowRoll', -1.5446, -0.0349, 1000, 'reblr'
+          'RElbowRoll', 0.0349, 1.5446, 1000, 'reblr'
       ], [
           'RWristYaw', -1.8238, 1.8238, 1000, 'rwriy'
       ], [
