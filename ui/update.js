@@ -10,68 +10,55 @@ function start_execution() {
     'reconnect' : true,
     'reconnection delay' : 500,
   } );
+  imageSocket = io.connect( 'nao.fgcu.edu:8080/Camera', {
+    'reconnect' : true,
+    'reconnection delay' : 500,
+  } );
   console.log( 'starting execution' );
   commandSocket.on( 'status', execution_status );
   positionSocket.on( 'positionUpdate', update_joint_position );
+  imageSocket.on( 'image', update_image );
   console.log( 'execution startes' );
+}
+
+function update_image( data ) {
+
+  // console.log("Image Received");
+  $( "#nao-camera img" ).attr( 'src', 'data:image/jpg;base64,' + data );
 }
 
 function stop_execution() {
 
   commandSocket.removeListener( 'status', execution_status );
   positionSocket.removeListener( 'positionUpdate', update_joint_position );
+  imageSocket.removeListener( 'image', update_image );
+  commandSocket.disconnect();
+  positionSocket.disconnect();
+  imageSocket.disconnect();
 }
 
 function execution_status( data ) {
 
-  $( $( '#modes' ).attr( 'data-mode' ) + '-Execution-Text' ).append(
+  $( '#' + $( '#modes' ).attr( 'data-mode' ) + '-Execution-Text' ).append(
       data + '<br/>&gt;&gt;' );
+  console.log( data );
 }
 
 function update_joint_position( data ) {
 
-  jointsran = [
-      [
-          'heady', -2.0857, 2.0857, 100
-      ], [
-          'headp', -0.6720, 0.6720, 100
-      ], [
-          'lshlp', -2.0857, 2.0857, 100
-      ], [
-          'lshlr', -0.3142, 1.3265, 100
-      ], [
-          'lelby', -2.0857, 2.0857, 100
-      ], [
-          'lelbr', -1.5446, -0.0349, 100
-      ], [
-          'lwriy', -1.8238, 1.8238, 100
-      ],
-      // ['lhand',-1,1,100],
-      [
-          'rshlp', -2.0857, 2.0857, 100
-      ], [
-          'rshlr', -0.3142, 1.3265, 100
-      ], [
-          'relby', -2.0857, 2.0857, 100
-      ], [
-          'relbr', -1.5446, -0.0349, 100
-      ], [
-          'rwriy', -1.8238, 1.8238, 100
-      ],
-  // ['rhand',-1,1,100]
-  ];
   // console.log( data );
   for( var joint in data ) {
-    var jointpos = data[joint];
-    var jointran = jointsran[joint];
-    // console.log( jointran[0] + ': ' + jointpos );
-    jointpos = Math.floor( jointran[3] * ( jointpos - jointran[1] )
-        / ( jointran[2] - jointran[1] ) );
-    // console.log(jointpos);
-    $( '#' + jointran[0] + '-show' ).attr( 'value', jointpos );
-    var edit = $( '#' + jointran[0] + '-edit' );
-    if( edit.attr('data-edited') == 'false' )
-      edit.attr( 'value', jointpos );
+    if( joint < 12 ) {
+      var jointpos = data[joint];
+      var jointran = get_joint_range( joint );
+      jointpos = Math.floor( jointran[3] * ( jointpos - jointran[1] )
+          / ( jointran[2] - jointran[1] ) );
+      $( '#' + jointran[4] + '-show' ).val( jointpos );
+      var edit = $( '#' + jointran[4] + '-edit' );
+      if( edit.attr( 'data-edited' ) == 'false' )
+        edit.val( jointpos );
+      // console.log( jointran[0] + ": " + jointpos );
+    }
   }
 }
 
@@ -79,7 +66,12 @@ function command_joint_position( joint, position ) {
 
   window.setTimeout( function() {
 
-    commandSocket.emit( 'movejoint', joint + ',' + position )
+    if( joint < 12 )
+      commandSocket
+          .emit( 'movejoint', get_joint_name( joint ) + ',' + position );
+    else
+      commandSocket.emit( 'simplescript', ( position == 0 ? 'open' : 'close' )
+          + ' ' + get_joint_name( joint ) );
   }, 2000 );
 }
 
@@ -103,4 +95,10 @@ function subscribe_camera() {
 
   socket.emit( 'Camera', 'subscribe' );
   socket.on( 'JointPositionExpired', resubscribe_camera );
+}
+
+function send_command( text ) {
+
+  console.log( text );
+  commandSocket.emit( 'simplescript', text );
 }

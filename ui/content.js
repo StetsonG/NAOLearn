@@ -94,9 +94,16 @@ $( document )
                 '<label class="edit-slide-label" for="' + j + '-show">' + joint
                     + '</label>' );
             $( '#nao-joints-edit' ).append( '<br/>' );
-            var edit = $( '<input type="range" data-edited="false" data-joint-name="' + j
-                + '" data-joint-index="' + jointind + '" class="edit-slide'
-                + state + '" name="' + j + '-edit" id="' + j
+            var edit = $( '<input type="range" data-edited="false" data-joint-name="'
+                + j
+                + '" data-joint-index="'
+                + jointind
+                + '" class="edit-slide'
+                + state
+                + '" name="'
+                + j
+                + '-edit" id="'
+                + j
                 + '-edit" value="0" min="0" max="' + jointran[3] + '">' );
             if( jointind == -1 ) {
               var cont = $( '<div style="display:inline-block; position:relative;"></div>' );
@@ -162,14 +169,14 @@ $( document )
                 $( this ).change(
                     function( event ) {
 
-                      var jp = $(this).val();
-                      console.log("slidestop: "+jp);
-                      $(this).attr('data-edited','true');
-                      var ji = $(this).attr( 'data-joint-index' );
-                      var jointran = get_joint_range(ji);
+                      var jp = $( this ).val();
+                      console.log( "slidestop: " + jp );
+                      $( this ).attr( 'data-edited', 'true' );
+                      var ji = $( this ).attr( 'data-joint-index' );
+                      var jointran = get_joint_range( ji );
                       var position = jp / jointran[3]
                           * ( jointran[2] - jointran[1] ) + jointran[1];
-                      console.log("position: "+position);
+                      console.log( "position: " + position );
                       command_joint_position( ji, position );
                     } );
               } );
@@ -383,8 +390,37 @@ function fill_exercise() {
 
   var mode = $( '#Exercise-Mode' );
   var main = $( '#Exercise-Mode .mode-main' );
-  main
-      .append( '<p>In Exercise mode, you can enter commands to control the NAO. Status messages we be displayed in the Execution section and the current position of all the joints are shown in the sliders to the left.  You can also control the joints with the white sliders.</p>' );
+  text = $( '<section class="mode-main-text"></section>' );
+  text.append( '<p>In Exercise mode, you can enter commands to control the '
+      + 'NAO. Status messages we be displayed in the Execution section '
+      + 'and the current position of all the joints are shown in the '
+      + 'sliders to the left.  You can also control the joints with the '
+      + 'white sliders.</p>' );
+  text.append( '<p>The available commands are: </p>' );
+  var list = $( '<ul></ul>' );
+  list.append( '<li>set JOINTNAME ANGLE</li>' );
+  list.append( '<li>open JOINTNAME ANGLE</li>' );
+  list.append( '<li>close JOINTNAME ANGLE</li>' );
+  list.append( '<li>say TEXT</li>' );
+  text.append( list );
+  text.append( '<p>TEXT is any string and does not need to be quoted. '
+      + 'ANGLE is in radians. The accepted values for JOINTNAME and '
+      + 'their accepted values for ANGLE are listed below.</p>' );
+  var joints = get_joint_ranges();
+  var tab = $( '<table><table>' );
+  tab
+      .append( '<tr><th>Joint Name</th><th>Minimum Angle</th><th>Maximum Angle</th></tr>' );
+  var j = 0;
+  while( j < 12 ) {
+    range = joints[j++ ];
+    var row = $( '<tr></tr>' );
+    row.append( '<td>' + range[0] + '</td>' );
+    row.append( '<td>' + range[1] + '</td>' );
+    row.append( '<td>' + range[2] + '</td>' );
+    tab.append( row );
+  }
+  text.append( tab );
+  main.append( text );
   add_entry( main, 'Exercise' );
   main.append( '<div class="spacer"></div>' );
   add_execution( main, 'Exercise' );
@@ -435,10 +471,15 @@ function add_entry( main, mode ) {
 
   entry = $( '<section id="' + mode + '-Entry"></section>' );
   entry.append( '<h2>Command Prompt</h2>' );
-  prompt = $( '<form class="entry-form"></form>' );
+  prompt = $( '<form id="' + mode + '-Entry-Form" class="entry-form"></form>' );
   prompt.append( '<input class="entry-prompt" id="' + mode
       + '-Entry-Prompt" type="text"/>' );
   prompt.append( '<input class="entry-submit" type="submit" value="submit"/>' );
+  prompt.submit( function() {
+
+    send_command( $( '#' + mode + '-Entry-Prompt' ).val() );
+    $( '#' + mode + '-Entry-Prompt' ).val( '' );
+  } );
   entry.append( prompt );
   main.append( entry );
 }
