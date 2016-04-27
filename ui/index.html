@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Xiim - NAOLearn</title>
+    <link href='main.css' rel="stylesheet"/>
+    <link href='range.css' rel="stylesheet"/>
+    <link href='range.show.css' rel="stylesheet"/>
+    <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="content.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
+    <script type="text/javascript" src="update.js"></script>
+  </head>
+  <body>
+  <div id="page">
+    <div id="body">
+      <main id="modes">
+        <div id="modes-col">
+          <p class="html-marker" id="mode-insertion-point">mode-insertion-point</p>
+        </div>
+        <section class="port" id="nao-joints">
+          <h2>NAOBot Joint Controller</h2>
+          <div class="inner">
+          <div id="nao-joints-left">
+            <div id="nao-joints-forms">
+              <form id="nao-joints-show"><p class="html-marker">Nao Joints Show<p></form>
+              <!--img id="nao-joints-mask" src="c.gif"/-->
+              <!--div id="nao-joints-mask"></div-->
+              <form id="nao-joints-edit"><p class="html-marker">Nao Joints Edit<p></form>
+            </div>
+          </div>
+          <div id="nao-joints-right">
+            <div id="nao-camera">
+              <img src="t.gif"/>
+            </div>
+            <div id="nao-diagram">
+              <img id="nao-diagram-img" src="nao_joints_none.jpg"/>
+            </div>
+          </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  </body>
+</html>

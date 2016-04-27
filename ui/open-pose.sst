@@ -1,0 +1,18 @@
+set HeadYaw 0
+set HeadPitch 0
+
+set LShoulderPitch 0
+set RShoulderPitch 0
+set LShoulderRoll 1
+set RShoulderRoll 1
+
+set LElbowYaw 0
+set RElbowYaw 0
+set LElbowRoll -.5
+set RElbowRoll .5
+
+set LWristYaw -1
+set RWristYaw -1
+
+open LHand
+open LHand
