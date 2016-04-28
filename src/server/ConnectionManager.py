@@ -32,6 +32,12 @@ JointNames = [
         'RElbowYaw',
         'RWristYaw']
 
+cameraTimer = None
+int numCamSubsribers = 0
+jointTimer = None
+int numJointSubscribers = 0
+
+
 #### Socket IO communication between Python and webpage's Javascript
 #### New instance for each connected client
 class CameraNamespace(BaseNamespace, BroadcastMixin):
@@ -40,26 +46,20 @@ class CameraNamespace(BaseNamespace, BroadcastMixin):
     # Runs on connection from new client
     def recv_connect(self):
         self.subscribed = True
-        self.framerate = 10
+        self.framerate = 2
         print "Camera channel connected"
 
         def sendImage():
             frame = imageHandler.getLatestFrame()
-            self.emit("image", frame.encode('base64'))
+            self.broadcast_event("image", frame.encode('base64'))
 
-        self.timer = RepeatedTimer(1.0/self.framerate, sendImage)
-
-    def on_subscribe(self, msg):
-        self.timer.start()
-
-    def on_unsubscribe(self, msg):
-        self.timer.stop()
-
-    def on_disconnect(self):
-        self.timer.stop()
+        global cameraTimer
+        if cameraTimer == None:
+            print "Starting camera timer"
+            cameraTimer = RepeatedTimer(1.0/self.framerate, sendImage)
 
     def __del__(self):
-        self.timer.stop()
+        print "Camera channel disconnected"
 
 
 class JointPositionNamespace(BaseNamespace, BroadcastMixin):
@@ -74,19 +74,14 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
         def sendPositions():
                 self.emit('positionUpdate', motionController.getJointAngles(JointNames))
 
-        self.timer = RepeatedTimer(1, sendPositions)
+        global jointTimer
+        if jointTimer == None:
+            print "Starting joint timer"
+            jointTimer = RepeatedTimer(1, sendPositions)
 
-    def on_subscribe(self, msg):
-        self.timer.start()
-
-    def on_unsubscribe(self, msg):
-        self.timer.stop()
-
-    def on_disconnect(self):
-        self.timer.stop()
 
     def __del__(self):
-        self.timer.stop()
+        print "JointPosition channel disconnected"
 
 class CommandNamespace(BaseNamespace, BroadcastMixin):
 
@@ -110,8 +105,8 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
             motionController.setJointAngle(jointName, jointAngle)
 
             self.emit('status', "MoveJoint Command Succeeded")
-        except:
-            self.emit('status', "MoveJoint Command Failed")
+        except Exception as e:
+            self.emit('status', "MoveJoint Command Failed: ", str(e))
 
     def on_openhand(self, msg):
         try:
@@ -121,8 +116,9 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
 
             motionController.openHand(asciidata)
             self.emit('status', "OpenHand Command Succeeded")
-        except:
-            self.emit('status', "OpenHand Command Failed")
+        except Exception as e:
+            self.emit('status', "OpenHand Command Failed: ", str(e))
+
 
     def on_closehand(self, msg):
         try:
@@ -132,8 +128,8 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
 
             motionController.closeHand(asciidata)
             self.emit('status', "OpenHand Command Succeeded")
-        except:
-            self.emit('status', "OpenHand Command Failed")
+        except Exception as e:
+            self.emit('status', "OpenHand Command Failed: ", str(e))
 
     def on_simplescript(self, msg):
         try:
@@ -142,11 +138,14 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
             #Convert JointName string from utf-8 to ASCII for NAOqi compatibility
             udata=msg.decode("utf-8")
             asciidata=udata.encode("ascii","ignore")
-            
+
             motionController.runSimpleScript(asciidata)
             self.emit('status', "SimpleScript Execution Succeeded")
-        except:
-            self.emit('status', "SimpleScript Execution Failed")
+        except Exception as e:
+            self.emit('status', "SimpleScript Execution Failed: ", str(e))
+
+    def __del__(self):
+        print "Command channel disconnected"
 
     #def on_verify(self, msg):
         ## TODO Run command/script through interpreter to see if it is valid
