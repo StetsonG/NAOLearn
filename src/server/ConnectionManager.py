@@ -33,9 +33,7 @@ JointNames = [
         'RWristYaw']
 
 cameraTimer = None
-int numCamSubsribers = 0
 jointTimer = None
-int numJointSubscribers = 0
 
 
 #### Socket IO communication between Python and webpage's Javascript

@@ -1,3 +1,6 @@
+say I am a Robot. Boo!
+say Beginning Demo Script 1
+
 set HeadYaw 0.6
 set LShoulderPitch -1.0
 set RShoulderPitch -1.0
@@ -11,3 +14,5 @@ set LShoulderPitch 1.0
 set RShoulderPitch 1.0
 close LHand
 close RHand
+
+say Demo Script Complete

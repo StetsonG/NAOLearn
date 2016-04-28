@@ -30,9 +30,11 @@ $(function() {
   commandSocket.on('connect', function(data) {
     console.log("Command Channel Connected");
 
-    commandSocket.emit('movejoint', "0,0.5");
+    commandSocket.emit('movejoint', "HeadYaw,0.5");
+    commandSocket.emit('openhand', "LHand");
     window.setTimeout(function(){
-      commandSocket.emit('movejoint', "0,-0.5")
+      commandSocket.emit('movejoint', "HeadYaw,-0.5")
+      commandSocket.emit('closehand', "LHand");
     }, 2000);
 
 
