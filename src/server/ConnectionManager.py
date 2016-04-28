@@ -100,9 +100,9 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
 
             msg = [x.strip() for x in msg.split(',')]
 
-            #Look up JointName in global JointNames array
-            jointID = int(msg[0])
-            jointName = JointNames[jointID]
+            #Convert JointName string from utf-8 to ASCII for NAOqi compatibility
+            udata=msg[0].decode("utf-8")
+            jointName=udata.encode("ascii","ignore")
 
             jointAngle = float(msg[1])
 
@@ -115,14 +115,22 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
 
     def on_openhand(self, msg):
         try:
-            motionController.openHand(msg)
+            #Convert JointName string from utf-8 to ASCII for NAOqi compatibility
+            udata=msg.decode("utf-8")
+            asciidata=udata.encode("ascii","ignore")
+
+            motionController.openHand(asciidata)
             self.emit('status', "OpenHand Command Succeeded")
         except:
             self.emit('status', "OpenHand Command Failed")
 
     def on_closehand(self, msg):
         try:
-            motionController.closeHand(msg)
+            #Convert JointName string from utf-8 to ASCII for NAOqi compatibility
+            udata=msg.decode("utf-8")
+            asciidata=udata.encode("ascii","ignore")
+
+            motionController.closeHand(asciidata)
             self.emit('status', "OpenHand Command Succeeded")
         except:
             self.emit('status', "OpenHand Command Failed")
@@ -130,8 +138,11 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
     def on_simplescript(self, msg):
         try:
             print "Received Script: \n" + msg
+
+            #Convert JointName string from utf-8 to ASCII for NAOqi compatibility
             udata=msg.decode("utf-8")
             asciidata=udata.encode("ascii","ignore")
+            
             motionController.runSimpleScript(asciidata)
             self.emit('status', "SimpleScript Execution Succeeded")
         except:
