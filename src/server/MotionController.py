@@ -10,6 +10,8 @@ class MotionController() :
 
 	def __init__(self):
 		self.robot = ALProxy("ALMotion", nao_ip, 9559)
+		self.tts = ALProxy("ALTextToSpeech", nao_ip, 9559)
+		self.tts.setLanguage("English")
 		self.move_stiffness = 1
 		self.rest_stiffness = 0
 		self.joint_speed = 0.1
@@ -44,6 +46,8 @@ class MotionController() :
 		useSensors = True
 		return self.robot.getAngles("Body", useSensors)
 
+	def say(self, speech):
+		self.tts.say(speech)
 
 	def openHand(self, handName):
 		self.robot.openHand(handName)
@@ -72,22 +76,31 @@ class MotionController() :
 
 	def runSimpleScript(self, script):
 		lines = script.split("\n")
-		
+		i = 0
 		for l in lines:
+			i += 1
 			tokens = l.split()
 
 			if len(tokens) >= 3 and tokens[0] == "set":
 				self.setJointAngle(tokens[1], float(tokens[2]))
 				#time.sleep(1)
 
-			if len(tokens) >= 2 and tokens[0] == "open":
+			elif len(tokens) >= 2 and tokens[0] == "open":
 				self.openHand(tokens[1])
 
-			if len(tokens) >= 2 and tokens[0] == "close":
+			elif len(tokens) >= 2 and tokens[0] == "close":
 				self.closeHand(tokens[1])
 
-			if len(tokens) >= 2 and tokens[0] == "wait":
+			elif len(tokens) >= 2 and tokens[0] == "say":
+				speech = l[3:]
+				self.say(speech)
+
+			elif len(tokens) >= 2 and tokens[0] == "wait":
 				time.sleep(float(tokens[1]))
+
+			elif len(tokens) > 0 :
+				print tokens
+				raise Exception('Invalid command,line ', i)
 
 
 
