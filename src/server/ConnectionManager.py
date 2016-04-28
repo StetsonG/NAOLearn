@@ -70,27 +70,23 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
 
     # Runs on connection from new client
     def recv_connect(self):
-        self.subscribed = True
-
         print "JointPosition channel connected"
         def sendPositions():
                 self.emit('positionUpdate', motionController.getJointAngles(JointNames))
 
         self.timer = RepeatedTimer(1, sendPositions)
 
+    def on_subscribe(self, msg):
+        self.timer.start()
+
+    def on_unsubscribe(self, msg):
+        self.timer.stop()
+
     def on_disconnect(self):
         self.timer.stop()
 
     def __del__(self):
         self.timer.stop()
-
-    #def on_subscribe(self, msg):
-        ## TODO Check for msg in JointNames
-        ## Set appropriate JointSubscriptions[] to true
-
-    #def on_unsubscribe(self, msg):
-        ## TODO Check for msg in JointNames
-        ## Set appropriate JointSubscriptions[] to false
 
 class CommandNamespace(BaseNamespace, BroadcastMixin):
 
@@ -118,16 +114,28 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
             self.emit('status', "MoveJoint Command Failed")
 
     def on_openhand(self, msg):
-        motionController.openHand(msg)
+        try:
+            motionController.openHand(msg)
+            self.emit('status', "OpenHand Command Succeeded")
+        except:
+            self.emit('status', "OpenHand Command Failed")
 
     def on_closehand(self, msg):
-        motionController.closeHand(msg)
+        try:
+            motionController.closeHand(msg)
+            self.emit('status', "OpenHand Command Succeeded")
+        except:
+            self.emit('status', "OpenHand Command Failed")
 
     def on_simplescript(self, msg):
-        print "Received Script: \n" + msg
-        udata=msg.decode("utf-8")
-        asciidata=udata.encode("ascii","ignore")
-        motionController.runSimpleScript(asciidata)
+        try:
+            print "Received Script: \n" + msg
+            udata=msg.decode("utf-8")
+            asciidata=udata.encode("ascii","ignore")
+            motionController.runSimpleScript(asciidata)
+            self.emit('status', "SimpleScript Execution Succeeded")
+        except:
+            self.emit('status', "SimpleScript Execution Failed")
 
     #def on_verify(self, msg):
         ## TODO Run command/script through interpreter to see if it is valid
