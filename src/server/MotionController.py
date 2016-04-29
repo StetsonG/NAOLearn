@@ -6,6 +6,7 @@ from threading import Timer
 #nao_ip = "192.168.0.102"
 nao_ip = "lain.local"
 
+
 class MotionController() :
 
 	def __init__(self):
@@ -27,7 +28,7 @@ class MotionController() :
 		self.robot.setStiffnesses(jointName, self.rest_stiffness)
 		return True
 
-	### Sends the command to set anj absolute joint angle on the NAO
+	### Sends the command to set an absolute joint angle on the NAO
 	# Sets stiffness to move_stiffness during motion and then
 	# returns to rest_stiffness when complete
 	def setJointAngle(self, jointName, angle):
@@ -37,7 +38,9 @@ class MotionController() :
 		t.start()
 		return True
 
-
+	### Requests a set of joint angles based on the given list of jointNames
+	# The useSensors option determines whether the NAO reports the commanded
+	# joint positions or the positions that are actually verified by internal sensors 
 	def getJointAngles(self, jointNames):
 		useSensors = True
 		return self.robot.getAngles(jointNames, useSensors)
@@ -73,7 +76,7 @@ class MotionController() :
 			return True
 		return False
 
-
+	### Attempts to interpret and execute a given text script according to the NAO Script rules
 	def runSimpleScript(self, script):
 		lines = script.split("\n")
 		i = 0
