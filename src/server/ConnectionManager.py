@@ -70,7 +70,7 @@ class JointPositionNamespace(BaseNamespace, BroadcastMixin):
     def recv_connect(self):
         print "JointPosition channel connected"
         def sendPositions():
-                self.emit('positionUpdate', motionController.getJointAngles(JointNames))
+                self.broadcast_event('positionUpdate', motionController.getJointAngles(JointNames))
 
         global jointTimer
         if jointTimer == None:
